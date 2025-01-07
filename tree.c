@@ -1,4 +1,3 @@
-// تعریف ساختار داده در زبان C
 #include <stdio.h>
 #include <stdlib.h>
 
