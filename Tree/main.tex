@@ -1,0 +1,411 @@
+\documentclass{article}
+\usepackage{colortbl}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\hypersetup{
+	colorlinks = true,
+	linkbordercolor = white,
+	urlcolor = black,
+	citecolor = black,
+	allcolors = black
+}
+\usepackage{roundbox,graphicx,framed,tikz}
+\usepackage{LectureTemplate}
+\usepackage{tabularx}
+\parindent=0pt
+\settextfont[Scale = 1.0 ,
+BoldFont = *Bd ,
+ItalicFont = *It ,
+BoldItalicFont = *BdIt ,
+Extension = .ttf
+]{XB Yas} 
+
+\makeatletter
+\renewcommand{\@makefntext}[1]{\parindent 1em
+	\noindent\hbox to 1em{}% if you want to indent footnote text you can change the width of the hbox (e.g. \hbox to 2em{})
+	\llap{\if@RTL\else\latinfont\fi\@thefnmark)\,\,}#1}
+\makeatother
+\renewcommand\UrlFont{\color{blue}\rmfamily\itshape}
+
+%\settextfont{XB Niloofar}
+\defpersianfont\nastaliq{IranNastaliq.ttf}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.99,0.99,0.99}
+\lstset{
+	language=C,
+	backgroundcolor=\color{backcolour},
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	numbers=left,
+	frame=single,
+	breaklines=true,
+	escapeinside={\%*}{*)}
+}
+
+\begin{document}
+\handout{\textbf{نام و نام خانوادگی:} محمد احمدی }
+{
+}
+{
+\textbf{موضوع پروژه:} پیاده سازی درخت 
+}
+
+\medskip\noindent
+\roundbox{\parbox{\dimexpr(\textwidth-2\hrboxsep-2\fboxrule)}{
+		\quad\parbox{\dimexpr(1\textwidth-0.2\hrboxsep-0.1\fboxrule)}{
+			\begin{itemize}
+				\item این پروژه اختیاری و حداقل یک نمره مازاد بر نمرات درس، به آن تعلق گرفته است.
+				\item گروه‌بندی مجاز نیست و حل این تمرینات به صورت انفرادی انجام می‌شود.
+				\item مهلت زمان ارسال پروژه تا بیست و یکم دی ماه است.
+				\item برای هر پروژه یک متن در نظر گرفته شده است که هنگام تحویل سوال مشخص شده است.
+			\end{itemize}
+			
+			\begin{center}
+				\textbf{ساختار پروژه}
+			\end{center}
+			
+			\begin{itemize}
+				\item دو فایل مربوط به \lr{LaTeX}: یک فایل حاوی سورس و دیگری \lr{PDF} مربوطه باشد.
+				\begin{itemize}
+					\item توضیحات کلی درباره‌ی روش پیاده‌سازی در صورت نیاز:
+					\begin{itemize}
+						\item شبه کد عملیات‌ها:
+						\begin{itemize}
+							\item توضیح شبه‌کد؛
+							\item شبه‌کد.
+						\end{itemize}
+						\item تحلیل مجانبی از کارایی زمانی (و کارایی فضایی در صورت نیاز).
+					\end{itemize}
+				\end{itemize}
+				\item فایل \lr{C}:
+				\begin{itemize}
+					\item تعریف دقیق و ساختارمند ساختار داده‌ها و اشیای مورد استفاده،
+					\item پیاده‌سازی عملیات‌های خواسته شده،
+					\item اجرای ورودی داده شده در صورت سوال،
+					\item کامنت‌گذاری در صورت نیاز.
+				\end{itemize}
+			\end{itemize}
+	
+		}
+}}
+
+\vspace{0.5cm}
+\newpage
+
+\section*{پیاده سازی درخت}
+این پیاده‌سازی به طور کلی یک درخت پویا را تعریف می‌کند. درخت از گره‌هایی تشکیل شده که هر گره می‌تواند چندین فرزند داشته باشد. گره ها متشکل از بخش‌های زیر هستند.
+\begin{enumerate}
+	\item
+بخش داده: مقداری که گره نگهداری میکند.
+	\item
+بخش والد: اشاره‌گری به والد گره. اگر گره ریشه باشد، مقدار این فیلد NULL است.
+	\item
+بخش فرزندان: آرایه‌ای از اشاره‌گرها به فرزندان گره.
+	\item
+بخش تعداد فرزندان گره.
+\end{enumerate}
+
+
+\section*{شبه کدها}
+
+\textbf{ایجاد گره:}
+\begin{latin}
+	\begin{algorithm}
+		\caption{CreateNode(data)}
+		\begin{algorithmic}[1]
+			\State newNode.data $\gets$ data
+			\State newNode.parent $\gets$ NULL
+			\State newNode.children $\gets$ []
+			\State newNode.childCount $\gets$ 0 \\
+			\State\textbf{return} newNode
+		\end{algorithmic}
+	\end{algorithm}
+\end{latin}
+الگوریتم یک گره جدید ایجاد می‌کند و اطلاعات اولیه مربوط به آن گره را تنظیم می‌کند.
+\newline
+\textbf{تحلیل کارایی زمانی:}
+مجموع این عملیات‌ها ثابت هستند، زیرا هیچ‌یک از آن‌ها وابسته به اندازه داده‌ها یا پیچیدگی ساختار نیستند. بنابراین، پیچیدگی زمانی این الگوریتم از مرتبه $O(1)$ می‌باشد.
+\bigbreak\bigbreak\bigbreak
+\textbf{افزودن فرزند به گره :}
+\begin{latin}
+	\begin{algorithm}
+		\caption{AddChild(parent, child)}
+		\begin{algorithmic}[1]
+			\State Resize parent.children to parent.childCount + 1
+			\State parent.children[parent.childCount] $\gets$ child
+			\State parent.childCount $\gets$ parent.childCount + 1
+		\end{algorithmic}
+	\end{algorithm}
+\end{latin}
+این الگوریتم مسئول افزودن یک گره جدید (فرزند) به یک گره والد در ساختار درختی است. فضای ذخیره‌سازی لیست children متعلق به parent افزایش داده می‌شود تا امکان افزودن یک فرزند جدید فراهم شود.
+\newline
+\textbf{تحلیل کارایی زمانی:}
+مجموع این عملیات‌ها ثابت هستند، بنابراین پیچیدگی زمانی این الگوریتم از مرتبه $O(1)$ می‌باشد.
+
+\newpage
+\textbf{محاسبه عمق گره:}
+\begin{latin}
+	\begin{algorithm}
+		\caption{NodeDepth(node)}
+		\begin{algorithmic}[1]
+			\State depth $\gets$ 0
+			\While{node.parent $\neq$ NULL}
+				\State depth $\gets$ depth + 1
+				\State node $\gets$ node.parent
+			\EndWhile
+			\State\textbf{return} depth
+		\end{algorithmic}
+	\end{algorithm}
+\end{latin}
+الگوریتم NodeDepth برای محاسبه عمق یک گره در یک ساختار درختی استفاده می‌شود. عمق یک گره به تعداد یال‌ها بین آن گره و ریشه درخت گفته می‌شود. در این الگوریتم، با حرکت به سمت والدین گره، عمق گره محاسبه می‌شود.
+\newline
+\textbf{تحلیل کارایی زمانی:}
+پیچیدگی زمانی این الگوریتم به تعداد گره‌های روی مسیر از گره فعلی تا ریشه بستگی دارد. اگر عمق گره d باشد تعداد تکرارهای حلقه d خواهد بود. در نتیجه پیچیدگی زمانی از مرتبه $O(d)$ میباشد.
+\bigbreak
+\textbf{بررسی رابطه پدر-فرزندی:}
+\begin{latin}
+	\begin{algorithm}
+		\caption{IsParentChild(parent, child)}
+		\begin{algorithmic}[1]
+			\If{child.parent = parent}
+				\State\textbf{return} True
+			\Else
+				\State\textbf{return} False
+			\EndIf
+		\end{algorithmic}
+	\end{algorithm}
+\end{latin}
+الگوریتم IsParentChild برای بررسی این موضوع است که آیا یک گره خاص فرزند گره دیگری هست یا خیر.
+\newline
+\textbf{تحلیل کارایی زمانی:}
+این الگوریتم تنها شامل یک مقایسه ساده است و مستقل از اندازه درخت یا تعداد گره‌ها عمل می‌کند. بنابراین پیچیدگی زمانی آن $O(1)$ می‌باشد.
+\bigbreak
+
+\textbf{بررسی رابطه جد-فرزندی:}
+\begin{latin}
+	\begin{algorithm}
+		\caption{IsAncestor(ancestor, node)}
+		\begin{algorithmic}[1]
+			\While{node $\neq$ NULL}
+				\If{node.parent = ancestor}
+					\State\textbf{return} True
+				\EndIf
+				\State node $\gets$ node.parrent
+			\EndWhile
+			\State \textbf{return} False
+		\end{algorithmic}
+	\end{algorithm}
+\end{latin}
+الگوریتم IsAncestor برای بررسی این که آیا یک گره خاص، جد یک گره دیگر هست یا خیر، استفاده می‌شود. این الگوریتم با حرکت از گره هدف به سمت ریشه درخت، والدین آن را بررسی می‌کند تا ببیند آیا یکی از آن‌ها برابر با ancestor هست.
+\newline
+\textbf{تحلیل کارایی زمانی:}
+پیچیدگی زمانی این الگوریتم به تعداد گره‌های روی مسیر از گره node تا ریشه بستگی دارد. اگر عمق گره d باشد، حلقه حداکثر d بار اجرا می‌شود. پس پیچیدگی از مرتبه $O(d)$ می‌باشد.
+
+\newpage
+\textbf{چاپ نوادگان یک گره:}
+\begin{latin}
+	\begin{algorithm}
+		\caption{NodeDescendants(node)}
+		\begin{algorithmic}[1]
+			\If{node = NULL}
+				\State \textbf{return}
+			\EndIf
+			\For{i $\gets$ 0 to node.childCount - 1}
+				\State Print node.children[i].data
+				\State NodeDescendants(node.children[i])
+			\EndFor
+		\end{algorithmic}
+	\end{algorithm}
+\end{latin}
+الگوریتم NodeDescendants برای چاپ تمامی نوادگان (فرزندان، نوه‌ها، و به همین ترتیب) یک گره در ساختار درختی طراحی شده است. این الگوریتم از روش بازگشتی استفاده می‌کند و برای هر گره، تمام فرزندان آن و زیرشاخه‌های مربوطه را پیمایش و چاپ می‌کند.
+\newline
+\textbf{تحلیل کارایی زمانی:}
+برای تحلیل پیچیدگی زمانی، باید در نظر بگیریم که:
+\begin{itemize}
+	\item 
+هر گره دقیقاً یک بار بازدید می‌شود.
+	\item
+در هر بازدید، فرزندان گره بررسی می‌شوند.
+\end{itemize}
+اگر تعداد کل گره‌های موجود در درخت را n در نظر بگیریم، کارایی زمانی از مرتبه $O(n)$ میباشد.
+\bigbreak
+
+\textbf{گرفتن والد یک گره:}
+\begin{latin}
+	\begin{algorithm}
+		\caption{GetParent(node)}
+		\begin{algorithmic}[1]
+		\State\textbf{return} node.parent 
+		\end{algorithmic}
+	\end{algorithm}
+\end{latin}
+این الگوریتم وظیفه دارد که والد یک گره خاص را برگرداند.
+\newline
+\textbf{تحلیل کارایی زمانی:}
+این الگوریتم تنها شامل یک عملیات ساده دسترسی به فیلد است، بنابراین پیچیدگی زمانی آن $O(1)$ می‌باشد.
+\bigbreak
+\textbf{گرفتن هم‌سطح‌ها:}
+\begin{latin}
+	\begin{algorithm}
+		\caption{GetSiblings(node)}
+		\begin{algorithmic}[1]
+			\If{node.parent = NULL}
+				\State\textbf{return}
+			\EndIf 
+			\State parent $\gets$ node.parent
+			\For{i $\gets$ 0 to parent.childCount - 1}
+				\If{parent.children[i] $\neq$ node}
+					\State Print parent.children[i].data
+				\EndIf
+			\EndFor
+		\end{algorithmic}
+	\end{algorithm}
+\end{latin}
+این الگوریتم برای پیدا کردن و چاپ داده‌های خواهر و برادرهای یک گره خاص در یک ساختار درختی استفاده می‌شود. خواهر و برادرها گره‌هایی هستند که دارای یک والد مشترک هستند اما خود گره مورد نظر (node) نیستند.
+\newline
+\textbf{تحلیل کارایی زمانی:}
+پیمایش تمام فرزندان والد: اگر تعداد فرزندان والد n باشد، حلقه باید n بار اجرا شود.
+در هر تکرار، یک مقایسه و چاپ انجام می‌شود، که هر کدام $O(1)$
+زمان می‌برد.
+بنابراین، پیچیدگی زمانی این الگوریتم$O(n)$ می‌باشد.
+\newpage
+
+
+\section{پیاده سازی با زبان C:}
+\begin{latin}
+\begin{lstlisting}[caption={Tree implementation in C language}]
+#include <stdio.h>
+#include <stdlib.h>
+
+// define a structure template for a node in the tree.
+typedef struct NodeStruct {
+	int data;
+	struct NodeStruct* parent;
+	struct NodeStruct** children;
+	int childCount;      // number of children the node currently has.
+} NodeStruct;
+
+NodeStruct* Create_Node(int data, NodeStruct* parent);
+int Node_Depth(NodeStruct* node);
+int Is_Parent_Child(NodeStruct* parent, NodeStruct* child);
+int Is_Ancestor(NodeStruct* ancestor, NodeStruct* node);
+int Is_Internal(NodeStruct* node);
+void Node_Descendants(NodeStruct* node);
+void Get_Siblings(NodeStruct* node);
+void Add_Child(NodeStruct* parent, NodeStruct* child) ;   // DRY
+void Free_Node(NodeStruct* node);
+
+int main() {
+	NodeStruct* root = Create_Node(1, NULL);
+	NodeStruct* child1 = Create_Node(2, root);
+	NodeStruct* child2 = Create_Node(3, root);
+	Add_Child(root, child1);
+	Add_Child(root, child2);
+	
+	printf("Depth of child1: %d\n", Node_Depth(child1));
+	printf("Is root parent of child1? %d\n", Is_Parent_Child(root, child1));
+	
+	NodeStruct* grandchild = Create_Node(4, child1);
+	Add_Child(child1, grandchild);
+	
+	printf("Is root ancestor of grandchild? %d\n", Is_Ancestor(root, grandchild));
+	printf("Descendants of root: ");
+	Node_Descendants(root);
+	printf("\n");
+	
+	printf("Siblings of child1: ");
+	Get_Siblings(child1);
+	printf("\n");
+	
+	Free_Node(root);
+	printf("memory freed successfully\n");
+	return 0;
+}
+
+NodeStruct* Create_Node(int data, NodeStruct* parent) {
+	// allocate memory for a new node and cast it to the appropriate type
+	NodeStruct* newNode = (NodeStruct*)malloc(sizeof(NodeStruct));
+	newNode->data = data;
+	newNode->parent = parent;
+	newNode->children = NULL;
+	newNode->childCount = 0;
+	return newNode;
+}
+
+int Node_Depth(NodeStruct* node) {
+	int depth = 0;
+	while (node->parent != NULL) {
+		depth++;
+		node = node->parent;
+	}
+	return depth;
+}
+
+int Is_Parent_Child(NodeStruct* parent, NodeStruct* child) {
+	return (child->parent == parent);
+}
+
+int Is_Ancestor(NodeStruct* ancestor, NodeStruct* node) {
+	while (node != NULL) {
+		if (node->parent == ancestor) {
+			return 1;
+		}
+		node = node->parent;
+	}
+	return 0;
+}
+
+int Is_Internal(NodeStruct* node) {
+	return (node->childCount > 0);
+}
+
+void Node_Descendants(NodeStruct* node) {
+	if (node == NULL) return;        
+	for (int i = 0; i < node->childCount; i++) {
+		printf("%d ", node->children[i]->data);
+		Node_Descendants(node->children[i]);
+	}
+}
+
+void Get_Siblings(NodeStruct* node) {
+	if (node->parent == NULL) return;      // if node is root, return
+	NodeStruct* parent = node->parent;
+	for (int i = 0; i < parent->childCount; i++) {
+		if (parent->children[i] != node) {
+			printf("%d ", parent->children[i]->data);
+		}
+	}
+}
+
+void Add_Child(NodeStruct* parent, NodeStruct* child) {
+	// Resize the children array to accommodate the new child.
+	parent->children = (NodeStruct**)realloc(parent->children, sizeof(NodeStruct*) * (parent->childCount + 1));
+	parent->children[parent->childCount] = child;
+	parent->childCount++;
+}
+
+// function to free node and its children recursively 
+void Free_Node(NodeStruct* node) {
+	if (node == NULL) return;
+	// free memory for all children
+	for (int i = 0; i < node->childCount; i++) {
+		Free_Node(node->children[i]);
+	}
+	// free children array
+	free(node->children);
+	
+	free(node);
+}
+\end{lstlisting}
+\end{latin}
+
+\end{document}
